@@ -73,7 +73,8 @@ function requireAdmin(req, res, next) {
 // Public routes
 app.get('/', (req, res) => {
   const data = loadData();
-  res.render('index', { siteName: data.siteName, albums: data.albums || [] });
+  const albums = (data.albums || []).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  res.render('index', { siteName: data.siteName, albums });
 });
 
 app.get('/album/:id', (req, res) => {

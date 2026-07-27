@@ -38,7 +38,8 @@
               <% if (album.subtitle) { %>
                 <p class="album-subtitle"><%= album.subtitle %></p>
               <% } %>
-              <span class="album-date"><%= album.date %></span>
+              <% const d = new Date(album.date + 'T00:00:00'); const formatted = d.getFullYear() + ', ' + d.toLocaleDateString('en-GB', { month: 'long' }) + ' ' + d.getDate(); %>
+              <span class="album-date"><%= formatted %></span>
             </div>
           </a>
         <% }) %>
