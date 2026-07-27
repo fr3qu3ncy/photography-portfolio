@@ -44,7 +44,7 @@ img { display: block; max-width: 100%; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 2rem;
+  padding: 0.6rem 2rem;
   background: var(--bg-elevated);
   border-bottom: 1px solid var(--border);
 }
@@ -56,7 +56,7 @@ img { display: block; max-width: 100%; }
 }
 
 .site-logo .logo-img {
-  height: 2.5rem;
+  height: 3rem;
   width: auto;
   object-fit: contain;
 }
