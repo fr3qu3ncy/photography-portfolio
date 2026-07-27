@@ -14,18 +14,35 @@
   --border: #2a2a2a;
   --radius: 8px;
   --shadow: 0 2px 12px rgba(0,0,0,0.4);
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  --font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+}
+
+[data-theme="light"] {
+  --bg: #fafaf9;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --text: #1c1917;
+  --text-muted: #78716c;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --border: #e7e5e4;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background 0.3s, color 0.3s;
 }
 
 a { color: var(--text); text-decoration: none; }
@@ -39,7 +56,6 @@ img { display: block; max-width: 100%; }
   width: 100%;
 }
 
-/* ── Navigation ───────────────────────────────────────── */
 .site-nav {
   position: sticky;
   top: 0;
@@ -50,12 +66,14 @@ img { display: block; max-width: 100%; }
   padding: 0.6rem 2rem;
   background: var(--bg-elevated);
   border-bottom: 1px solid var(--border);
+  transition: background 0.3s, border-color 0.3s;
 }
 
 .site-logo {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  font-family: var(--font-heading);
 }
 
 .site-logo .logo-img {
@@ -71,15 +89,14 @@ img { display: block; max-width: 100%; }
 }
 .nav-links a:hover { color: var(--text); }
 
-/* ── Page Title ───────────────────────────────────────── */
 .page-title {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
   letter-spacing: -0.02em;
+  font-family: var(--font-heading);
 }
 
-/* ── Albums Grid ──────────────────────────────────────── */
 .albums-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -92,6 +109,7 @@ img { display: block; max-width: 100%; }
   border-radius: var(--radius);
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--border);
 }
 .album-card:hover {
   transform: translateY(-4px);
@@ -135,6 +153,7 @@ img { display: block; max-width: 100%; }
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
+  font-family: var(--font-heading);
 }
 
 .album-subtitle {
@@ -150,7 +169,6 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.05em;
 }
 
-/* ── Album Page ───────────────────────────────────────── */
 .album-header {
   text-align: center;
   margin-bottom: 2.5rem;
@@ -170,6 +188,7 @@ img { display: block; max-width: 100%; }
   font-weight: 700;
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
+  font-family: var(--font-heading);
 }
 
 .album-page-subtitle {
@@ -193,7 +212,6 @@ img { display: block; max-width: 100%; }
   margin: 0.5rem auto 0;
 }
 
-/* ── Photo Gallery (Masonry) ──────────────────────────── */
 .photo-gallery {
   columns: 3;
   column-gap: 1rem;
@@ -205,6 +223,7 @@ img { display: block; max-width: 100%; }
   border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
+  border: 1px solid var(--border);
 }
 
 .gallery-img {
@@ -216,7 +235,6 @@ img { display: block; max-width: 100%; }
   opacity: 0.9;
 }
 
-/* ── Lightbox ─────────────────────────────────────────── */
 .lightbox {
   display: none;
   position: fixed;
@@ -253,7 +271,15 @@ img { display: block; max-width: 100%; }
 .lightbox-prev { left: 1rem; top: 50%; transform: translateY(-50%); }
 .lightbox-next { right: 1rem; top: 50%; transform: translateY(-50%); }
 
-/* ── Footer ───────────────────────────────────────────── */
+[data-theme="light"] .lightbox {
+  background: rgba(255, 255, 255, 0.97);
+}
+[data-theme="light"] .lightbox-close,
+[data-theme="light"] .lightbox-prev,
+[data-theme="light"] .lightbox-next {
+  color: #1c1917;
+}
+
 .site-footer {
   text-align: center;
   padding: 2rem;
@@ -263,7 +289,6 @@ img { display: block; max-width: 100%; }
   margin-top: auto;
 }
 
-/* ── Buttons ──────────────────────────────────────────── */
 .btn {
   display: inline-block;
   padding: 0.625rem 1.25rem;
@@ -287,14 +312,12 @@ img { display: block; max-width: 100%; }
 .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
 .btn-xs { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
 
-/* ── Empty State ──────────────────────────────────────── */
 .empty-state {
   text-align: center;
   color: var(--text-muted);
   padding: 3rem 0;
 }
 
-/* ── 404 ──────────────────────────────────────────────── */
 .not-found {
   text-align: center;
   padding: 4rem 0;
@@ -302,7 +325,6 @@ img { display: block; max-width: 100%; }
 .not-found h1 { font-size: 5rem; font-weight: 700; color: var(--accent); }
 .not-found p { color: var(--text-muted); margin: 1rem 0 2rem; }
 
-/* ── Responsive ───────────────────────────────────────── */
 @media (max-width: 900px) {
   .photo-gallery { columns: 2; }
   .albums-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }

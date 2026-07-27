@@ -31,7 +31,7 @@ function loadData() {
   if (fs.existsSync(DATA_FILE)) {
     return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
   }
-  const defaults = { siteName: CONFIG.siteName, albums: [] };
+  const defaults = { siteName: CONFIG.siteName, theme: 'dark', typeface: 'system', albums: [] };
   saveData(defaults);
   return defaults;
 }
@@ -56,13 +56,17 @@ app.use(session({
   cookie: { maxAge: 8 * 60 * 60 * 1000 }, // 8 hours
 }));
 
-// Make logo available in all templates
+// Make site config available in all templates
 app.use((req, res, next) => {
   try {
     const data = loadData();
     res.locals.logo = data.logo || null;
+    res.locals.theme = data.theme || 'dark';
+    res.locals.typeface = data.typeface || 'system';
   } catch {
     res.locals.logo = null;
+    res.locals.theme = 'dark';
+    res.locals.typeface = 'system';
   }
   next();
 });
@@ -131,7 +135,10 @@ app.get('/admin/settings', requireAdmin, (req, res) => {
   const data = loadData();
   res.render('admin/settings', {
     siteName: data.siteName,
-    currentName: data.siteName,
+    currentName: data.siteName || CONFIG.siteName,
+    currentTheme: data.theme || 'dark',
+    currentTypeface: data.typeface || 'system',
+    logo: data.logo,
     hasLogo: !!(data.logo && fs.existsSync(path.join(CONFIG.uploadDir, data.logo))),
   });
 });
@@ -139,6 +146,8 @@ app.get('/admin/settings', requireAdmin, (req, res) => {
 app.post('/admin/settings', requireAdmin, (req, res) => {
   const data = loadData();
   data.siteName = req.body.siteName || CONFIG.siteName;
+  data.theme = req.body.theme || 'dark';
+  data.typeface = req.body.typeface || 'system';
   if (req.body.removeLogo === 'true') {
     if (data.logo) {
       const logoPath = path.join(CONFIG.uploadDir, data.logo);

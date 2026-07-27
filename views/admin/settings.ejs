@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Settings - <%= siteName %></title>
+  <title>Settings - <%= siteName %></title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/admin.css">
 </head>
@@ -18,32 +18,58 @@
     </div>
   </nav>
   <main class="admin-container">
-    <h1 class="admin-title">Site Settings</h1>
+    <h1 class="admin-title">Settings</h1>
 
-    <form method="POST" action="/admin/settings" class="admin-form">
+    <form class="admin-form" action="/admin/settings" method="post">
       <div class="form-group">
-        <label for="siteName">Site Name</label>
-        <input type="text" id="siteName" name="siteName" value="<%= currentName %>" required>
+        <label>Site Name</label>
+        <input type="text" name="siteName" value="<%= currentName %>" required>
       </div>
-      <button type="submit" class="btn btn-primary">Save</button>
+
+      <div class="form-group">
+        <label>Theme</label>
+        <select name="theme" style="width:100%;padding:0.625rem 0.75rem;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.875rem;">
+          <option value="dark"<%= currentTheme === 'dark' ? ' selected' : '' %>>Dark</option>
+          <option value="light"<%= currentTheme === 'light' ? ' selected' : '' %>>Light</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Typeface</label>
+        <select name="typeface" style="width:100%;padding:0.625rem 0.75rem;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.875rem;">
+          <option value="system"<%= currentTypeface === 'system' ? ' selected' : '' %>>System Sans (default)</option>
+          <option value="inter"<%= currentTypeface === 'inter' ? ' selected' : '' %>>Inter</option>
+          <option value="playfair"<%= currentTypeface === 'playfair' ? ' selected' : '' %>>Playfair Display</option>
+          <option value="dmsans"<%= currentTypeface === 'dmsans' ? ' selected' : '' %>>DM Sans</option>
+          <option value="spacegrotesk"<%= currentTypeface === 'spacegrotesk' ? ' selected' : '' %>>Space Grotesk</option>
+          <option value="lora"<%= currentTypeface === 'lora' ? ' selected' : '' %>>Lora</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Save Settings</button>
     </form>
 
-    <div class="logo-section">
-      <h2>Site Logo</h2>
-      <form method="POST" action="/admin/settings/logo" enctype="multipart/form-data" class="admin-form">
-        <div class="form-group">
-          <label for="logo">Upload new logo</label>
-          <input type="file" id="logo" name="logo" accept="image/*">
-        </div>
-        <button type="submit" class="btn btn-primary">Upload Logo</button>
-      </form>
-      <form method="POST" action="/admin/settings" class="admin-form">
-        <input type="hidden" name="removeLogo" value="true">
-        <input type="hidden" name="siteName" value="<%= currentName %>">
+    <div style="margin-top:2rem;">
+      <h2 style="font-size:1.25rem;margin-bottom:1rem;">Logo</h2>
+      <form class="admin-form" action="/admin/upload-logo" method="post" enctype="multipart/form-data">
         <% if (hasLogo) { %>
-          <button type="submit" class="btn btn-danger">Remove Logo</button>
+          <div style="margin-bottom:1rem;">
+            <img src="/uploads/<%= logo %>" alt="Current logo" style="max-height:64px;border-radius:var(--radius);border:1px solid var(--border);">
+          </div>
         <% } %>
+        <div class="form-group">
+          <label>Upload Logo (PNG, JPG, SVG)</label>
+          <input type="file" name="logo" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-outline">Upload Logo</button>
       </form>
+
+      <% if (hasLogo) { %>
+        <form action="/admin/settings" method="post" style="margin-top:1rem;">
+          <input type="hidden" name="removeLogo" value="true">
+          <button type="submit" class="btn btn-danger btn-sm">Remove Logo</button>
+        </form>
+      <% } %>
     </div>
   </main>
 </body>
