@@ -286,6 +286,29 @@ app.post('/admin/album/:albumId/photo/:photoId/title', requireAdmin, (req, res) 
   res.redirect(`/admin/album/${req.params.albumId}`);
 });
 
+// ── Bulk photo delete ──────────────────────────────────
+app.post('/admin/album/:albumId/photos/bulk-delete', requireAdmin, (req, res) => {
+  const data = loadData();
+  const album = data.albums.find(a => a.id === req.params.albumId);
+  if (!album) return res.status(404).send('Album not found');
+
+  const photoIds = req.body.photoIds || [];
+  for (const photoId of photoIds) {
+    const photo = album.photos.find(p => p.id === photoId);
+    if (!photo) continue;
+    for (const fname of [photo.filename, photo.thumbFilename, photo.fullFilename]) {
+      const p = path.join(CONFIG.uploadDir, fname);
+      if (fs.existsSync(p)) fs.unlinkSync(p);
+    }
+  }
+  album.photos = album.photos.filter(p => !photoIds.includes(p.id));
+  if (!album.photos.find(p => p.id === album.titlePhotoId)) {
+    album.titlePhotoId = album.photos.length ? album.photos[0].id : null;
+  }
+  saveData(data);
+  res.redirect(`/admin/album/${req.params.albumId}`);
+});
+
 // ── Logo upload (special multer for single file) ──────
 const logoStorage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, CONFIG.uploadDir),

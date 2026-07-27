@@ -62,10 +62,33 @@
       </form>
     </div>
 
+    <!-- Bulk Actions Toolbar -->
+    <div class="bulk-toolbar">
+      <label class="select-all-label">
+        <input type="checkbox" id="selectAll" class="bulk-checkbox">
+        <span>Select All</span>
+      </label>
+      <span class="selection-count" id="selectionCount">0 selected</span>
+      <form method="POST" action="/admin/album/<%= album.id %>/photos/bulk-delete"
+            id="bulkDeleteForm" style="display:inline"
+            onsubmit="return confirmBulkDelete()">
+        <button type="submit" class="btn btn-danger" id="bulkDeleteBtn" disabled>
+          Delete Selected
+        </button>
+      </form>
+    </div>
+
     <!-- Photos Grid -->
+    <form id="photosForm">
     <div class="admin-photos-grid">
       <% (album.photos || []).forEach(photo => { %>
         <div class="admin-photo-item">
+          <label class="photo-checkbox">
+            <input type="checkbox" name="photoId" value="<%= photo.id %>" class="photo-select"
+                   data-album-id="<%= album.id %>"
+                   onchange="updateBulkState()">
+            <span class="checkmark"></span>
+          </label>
           <img src="/uploads/<%= photo.thumbFilename %>" alt="">
           <div class="admin-photo-actions">
             <% if (album.titlePhotoId === photo.id) { %>
@@ -83,6 +106,7 @@
         </div>
       <% }) %>
     </div>
+    </form>
 
     <!-- Delete Album -->
     <div class="danger-zone">
@@ -94,6 +118,48 @@
       </form>
     </div>
   </main>
+
   <script src="/js/upload.js"></script>
+  <script>
+    function updateBulkState() {
+      const checkboxes = document.querySelectorAll('.photo-select');
+      const selected = Array.from(checkboxes).filter(cb => cb.checked);
+      const count = selected.length;
+      const selectAll = document.getElementById('selectAll');
+      const bulkBtn = document.getElementById('bulkDeleteBtn');
+      const countEl = document.getElementById('selectionCount');
+
+      countEl.textContent = count + ' selected';
+      selectAll.checked = count === checkboxes.length && checkboxes.length > 0;
+      selectAll.indeterminate = count > 0 && count < checkboxes.length;
+      bulkBtn.disabled = count === 0;
+    }
+
+    document.getElementById('selectAll').addEventListener('change', function() {
+      const checkboxes = document.querySelectorAll('.photo-select');
+      checkboxes.forEach(cb => cb.checked = this.checked);
+      updateBulkState();
+    });
+
+    // Sync hidden input on submit
+    document.getElementById('bulkDeleteForm').addEventListener('submit', function() {
+      const selected = document.querySelectorAll('.photo-select:checked');
+      // Remove old hidden inputs
+      this.querySelectorAll('input[name="photoIds"]').forEach(el => el.remove());
+      // Add hidden inputs for selected photo IDs
+      selected.forEach(cb => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'photoIds';
+        input.value = cb.value;
+        this.appendChild(input);
+      });
+    });
+
+    function confirmBulkDelete() {
+      const selected = document.querySelectorAll('.photo-select:checked').length;
+      return confirm('Delete ' + selected + ' photo' + (selected > 1 ? 's' : '') + '?');
+    }
+  </script>
 </body>
 </html>
