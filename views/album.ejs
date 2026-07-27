@@ -8,7 +8,9 @@
 </head>
 <body>
   <nav class="site-nav">
-    <a href="/" class="site-logo"><%= siteName %></a>
+    <a href="/" class="site-logo">
+      <% if (logo) { %><img src="/uploads/<%= logo %>" alt="<%= siteName %>" class="logo-img"><% } else { %><%= siteName %><% } %>
+    </a>
     <div class="nav-links"><a href="/">Home</a></div>
   </nav>
   <main class="container">
