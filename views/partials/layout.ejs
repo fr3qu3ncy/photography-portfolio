@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= siteName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="/" class="site-logo">
+      <% if (typeof siteName !== 'undefined') { %>
+        <%= siteName %>
+      <% } %>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+    </div>
+  </nav>
+  <main class="container">
+    <%- body %>
+  </main>
+  <footer class="site-footer">
+    <p>&copy; <%= new Date().getFullYear() %> <%= siteName %></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<%- include('../partials/layout', { body: `<div class="album-header">
+  <a href="/" class="back-link">&larr; All Albums</a>
+  <h1 class="album-page-title">${album.title}</h1>
+  <% if (album.subtitle) { %>
+    <p class="album-page-subtitle">${album.subtitle}</p>
+  <% } %>
+  <span class="album-page-date">${album.date}</span>
+</div>
+
+<section class="photo-gallery">
+  <% photos.forEach(photo => { %>
+    <div class="gallery-item">
+      <img src="/uploads/${photo.thumbFilename}"
+           data-full="/uploads/${photo.fullFilename}"
+           alt="${album.title}"
+           loading="lazy"
+           class="gallery-img">
+    </div>
+  <% }) %>
+</section>
+
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true">
+  <button class="lightbox-close" aria-label="Close">&times;</button>
+  <button class="lightbox-prev" aria-label="Previous">&#8249;</button>
+  <button class="lightbox-next" aria-label="Next">&#8250;</button>
+  <div class="lightbox-content">
+    <img src="" alt="">
+  </div>
+</div>
+
+<script src="/js/lightbox.js"></script>`) %>

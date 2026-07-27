@@ -1,0 +1,77 @@
+<%- include('../../partials/admin_layout', { body: `<div class="admin-album-header">
+  <a href="/admin" class="back-link">&larr; Back to Albums</a>
+  <h1 class="admin-title">${album.title}</h1>
+</div>
+
+<!-- Album Details Form -->
+<form method="POST" action="/admin/album/${album.id}/update" class="admin-form">
+  <div class="form-row">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" value="${album.title}" required>
+    </div>
+    <div class="form-group">
+      <label for="subtitle">Subtitle</label>
+      <input type="text" id="subtitle" name="subtitle" value="${album.subtitle || ''}">
+    </div>
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input type="date" id="date" name="date" value="${album.date}">
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<!-- Photo Upload -->
+<div class="upload-section">
+  <h2>Photos (${(album.photos || []).length})</h2>
+  <form method="POST" action="/admin/album/${album.id}/photos" enctype="multipart/form-data" id="uploadForm">
+    <div class="drop-zone" id="dropZone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <p>Drop photos here or click to browse</p>
+      <p class="upload-hint">JPG, PNG, WebP &middot; Max 20MB per file</p>
+      <input type="file" name="photos" multiple accept="image/*" id="fileInput" class="file-input">
+    </div>
+    <button type="submit" class="btn btn-primary upload-btn" id="uploadBtn" style="display:none">
+      Upload <span id="fileCount"></span>
+    </button>
+  </form>
+</div>
+
+<!-- Photos Grid -->
+<div class="admin-photos-grid">
+  <% (album.photos || []).forEach(photo => { %>
+    <div class="admin-photo-item">
+      <img src="/uploads/${photo.thumbFilename}" alt="">
+      <div class="admin-photo-actions">
+        <% if (album.titlePhotoId === photo.id) { %>
+          <span class="title-badge">Title Photo</span>
+        <% } else { %>
+          <form method="POST" action="/admin/album/${album.id}/photo/${photo.id}/title" class="inline-form">
+            <button type="submit" class="btn btn-xs btn-outline" title="Set as title photo">★</button>
+          </form>
+        <% } %>
+        <form method="POST" action="/admin/album/${album.id}/photo/${photo.id}/delete" class="inline-form"
+              onsubmit="return confirm('Delete this photo?')">
+          <button type="submit" class="btn btn-xs btn-danger" title="Delete photo">&times;</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<!-- Delete Album -->
+<div class="danger-zone">
+  <h3>Delete Album</h3>
+  <p>This will permanently delete this album and all its photos.</p>
+  <form method="POST" action="/admin/album/${album.id}/delete"
+        onsubmit="return confirm('Are you sure? This cannot be undone.')">
+    <button type="submit" class="btn btn-danger">Delete Album</button>
+  </form>
+</div>
+
+<script src="/js/upload.js"></script>`) %>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - <%= siteName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="/admin" class="admin-logo"><%= siteName %> <span class="admin-badge">Admin</span></a>
+    <div class="admin-nav-links">
+      <a href="/admin">Albums</a>
+      <a href="/admin/settings">Settings</a>
+      <a href="/" target="_blank">View Site</a>
+      <a href="/admin/logout">Logout</a>
+    </div>
+  </nav>
+  <main class="admin-container">
+    <%- body %>
+  </main>
+</body>
+</html>
