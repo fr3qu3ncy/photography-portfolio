@@ -56,6 +56,17 @@ app.use(session({
   cookie: { maxAge: 8 * 60 * 60 * 1000 }, // 8 hours
 }));
 
+// Make logo available in all templates
+app.use((req, res, next) => {
+  try {
+    const data = loadData();
+    res.locals.logo = data.logo || null;
+  } catch {
+    res.locals.logo = null;
+  }
+  next();
+});
+
 // Rate limit for admin routes
 const adminLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

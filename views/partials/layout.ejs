@@ -9,7 +9,9 @@
 <body>
   <nav class="site-nav">
     <a href="/" class="site-logo">
-      <% if (typeof siteName !== 'undefined') { %>
+      <% if (logo) { %>
+        <img src="/uploads/<%= logo %>" alt="<%= siteName %>" class="logo-img">
+      <% } else { %>
         <%= siteName %>
       <% } %>
     </a>

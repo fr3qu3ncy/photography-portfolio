@@ -55,6 +55,12 @@ img { display: block; max-width: 100%; }
   letter-spacing: -0.02em;
 }
 
+.site-logo .logo-img {
+  height: 2.5rem;
+  width: auto;
+  object-fit: contain;
+}
+
 .nav-links a {
   color: var(--text-muted);
   margin-left: 1.5rem;
