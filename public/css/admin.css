@@ -232,6 +232,17 @@
   font-weight: 500;
 }
 
+.bulk-toolbar-bottom {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  margin-bottom: 0;
+  margin-top: 1rem;
+  padding-bottom: 0.75rem;
+  border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+}
+
 .photo-checkbox {
   position: absolute;
   top: 0.5rem;

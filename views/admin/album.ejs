@@ -62,17 +62,17 @@
       </form>
     </div>
 
-    <!-- Bulk Actions Toolbar -->
+    <!-- Bulk Actions Toolbar (top) -->
     <div class="bulk-toolbar">
       <label class="select-all-label">
-        <input type="checkbox" id="selectAll" class="bulk-checkbox">
+        <input type="checkbox" class="select-all bulk-checkbox">
         <span>Select All</span>
       </label>
-      <span class="selection-count" id="selectionCount">0 selected</span>
+      <span class="selection-count">0 selected</span>
       <form method="POST" action="/admin/album/<%= album.id %>/photos/bulk-delete"
-            id="bulkDeleteForm" style="display:inline"
+            class="bulk-delete-form"
             onsubmit="return confirmBulkDelete()">
-        <button type="submit" class="btn btn-danger" id="bulkDeleteBtn" disabled>
+        <button type="submit" class="bulk-delete-btn" disabled>
           Delete Selected
         </button>
       </form>
@@ -85,7 +85,6 @@
         <div class="admin-photo-item">
           <label class="photo-checkbox">
             <input type="checkbox" name="photoId" value="<%= photo.id %>" class="photo-select"
-                   data-album-id="<%= album.id %>"
                    onchange="updateBulkState()">
             <span class="checkmark"></span>
           </label>
@@ -97,7 +96,7 @@
               <form method="POST" action="/admin/album/<%= album.id %>/photo/<%= photo.id %>/title" class="inline-form">
                 <button type="submit" class="btn btn-xs btn-outline" title="Set as title photo">&#9733;</button>
               </form>
-            <% } %>
+            <% } %>\
             <form method="POST" action="/admin/album/<%= album.id %>/photo/<%= photo.id %>/delete" class="inline-form"
                   onsubmit="return confirm('Delete this photo?')">
               <button type="submit" class="btn btn-xs btn-danger" title="Delete photo">&times;</button>
@@ -107,6 +106,22 @@
       <% }) %>
     </div>
     </form>
+
+    <!-- Bulk Actions Toolbar (bottom) -->
+    <div class="bulk-toolbar bulk-toolbar-bottom">
+      <label class="select-all-label">
+        <input type="checkbox" class="select-all bulk-checkbox">
+        <span>Select All</span>
+      </label>
+      <span class="selection-count">0 selected</span>
+      <form method="POST" action="/admin/album/<%= album.id %>/photos/bulk-delete"
+            class="bulk-delete-form"
+            onsubmit="return confirmBulkDelete()">
+        <button type="submit" class="bulk-delete-btn" disabled>
+          Delete Selected
+        </button>
+      </form>
+    </div>
 
     <!-- Delete Album -->
     <div class="danger-zone">
@@ -125,34 +140,44 @@
       const checkboxes = document.querySelectorAll('.photo-select');
       const selected = Array.from(checkboxes).filter(cb => cb.checked);
       const count = selected.length;
-      const selectAll = document.getElementById('selectAll');
-      const bulkBtn = document.getElementById('bulkDeleteBtn');
-      const countEl = document.getElementById('selectionCount');
 
-      countEl.textContent = count + ' selected';
-      selectAll.checked = count === checkboxes.length && checkboxes.length > 0;
-      selectAll.indeterminate = count > 0 && count < checkboxes.length;
-      bulkBtn.disabled = count === 0;
+      // Sync all select-all checkboxes
+      document.querySelectorAll('.select-all').forEach(sa => {
+        sa.checked = count === checkboxes.length && checkboxes.length > 0;
+        sa.indeterminate = count > 0 && count < checkboxes.length;
+      });
+
+      // Sync all selection counts
+      document.querySelectorAll('.selection-count').forEach(el => {
+        el.textContent = count + ' selected';
+      });
+
+      // Sync all delete buttons
+      document.querySelectorAll('.bulk-delete-btn').forEach(btn => {
+        btn.disabled = count === 0;
+      });
     }
 
-    document.getElementById('selectAll').addEventListener('change', function() {
-      const checkboxes = document.querySelectorAll('.photo-select');
-      checkboxes.forEach(cb => cb.checked = this.checked);
-      updateBulkState();
+    // Wire up all select-all checkboxes
+    document.querySelectorAll('.select-all').forEach(sa => {
+      sa.addEventListener('change', function() {
+        document.querySelectorAll('.photo-select').forEach(cb => cb.checked = this.checked);
+        updateBulkState();
+      });
     });
 
-    // Sync hidden input on submit
-    document.getElementById('bulkDeleteForm').addEventListener('submit', function() {
-      const selected = document.querySelectorAll('.photo-select:checked');
-      // Remove old hidden inputs
-      this.querySelectorAll('input[name="photoIds"]').forEach(el => el.remove());
-      // Add hidden inputs for selected photo IDs
-      selected.forEach(cb => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'photoIds';
-        input.value = cb.value;
-        this.appendChild(input);
+    // Wire up all bulk delete forms
+    document.querySelectorAll('.bulk-delete-form').forEach(form => {
+      form.addEventListener('submit', function() {
+        const selected = document.querySelectorAll('.photo-select:checked');
+        this.querySelectorAll('input[name="photoIds"]').forEach(el => el.remove());
+        selected.forEach(cb => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'photoIds';
+          input.value = cb.value;
+          this.appendChild(input);
+        });
       });
     });
 
