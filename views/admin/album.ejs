@@ -39,6 +39,10 @@
           <input type="date" id="date" name="date" value="<%= album.date %>">
         </div>
       </div>
+      <div class="form-group form-full">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="3"><%= album.description || '' %></textarea>
+      </div>
       <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 

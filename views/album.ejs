@@ -20,6 +20,9 @@
       <% } %>
       <% const d = new Date(album.date + 'T00:00:00'); const formatted = d.getFullYear() + ', ' + d.toLocaleDateString('en-GB', { month: 'long' }) + ' ' + d.getDate(); %>
       <span class="album-page-date"><%= formatted %></span>
+      <% if (album.description) { %>
+        <p class="album-page-description"><%= album.description %></p>
+      <% } %>
     </div>
 
     <section class="photo-gallery">

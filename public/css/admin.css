@@ -93,6 +93,23 @@
   border-color: var(--accent);
 }
 
+.form-group textarea {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.form-group textarea:focus {
+  border-color: var(--accent);
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 2fr 2fr 1fr;

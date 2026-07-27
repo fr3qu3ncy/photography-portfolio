@@ -153,6 +153,7 @@ app.post('/admin/album/create', requireAdmin, async (req, res) => {
     id,
     title: req.body.title || 'Untitled',
     subtitle: req.body.subtitle || '',
+    description: req.body.description || '',
     date: req.body.date || new Date().toISOString().split('T')[0],
     photos: [],
     titlePhotoId: null,
@@ -167,6 +168,7 @@ app.post('/admin/album/:id/update', requireAdmin, (req, res) => {
   if (!album) return res.status(404).send('Album not found');
   album.title = req.body.title;
   album.subtitle = req.body.subtitle || '';
+  album.description = req.body.description || '';
   album.date = req.body.date;
   if (req.body.titlePhotoId) album.titlePhotoId = req.body.titlePhotoId;
   saveData(data);

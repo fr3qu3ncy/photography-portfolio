@@ -176,6 +176,14 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.05em;
 }
 
+.album-page-description {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  max-width: 48rem;
+  margin: 0.5rem auto 0;
+}
+
 /* ── Photo Gallery (Masonry) ──────────────────────────── */
 .photo-gallery {
   columns: 3;
