@@ -1,59 +1,81 @@
-<%- include('../../partials/admin_layout', { body: `<h1 class="admin-title">Manage Albums</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - <%= siteName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="/admin" class="admin-logo"><%= siteName %> <span class="admin-badge">Admin</span></a>
+    <div class="admin-nav-links">
+      <a href="/admin">Albums</a>
+      <a href="/admin/settings">Settings</a>
+      <a href="/" target="_blank">View Site</a>
+      <a href="/admin/logout">Logout</a>
+    </div>
+  </nav>
+  <main class="admin-container">
+    <h1 class="admin-title">Manage Albums</h1>
 
-<div class="admin-actions">
-  <button class="btn btn-primary" onclick="document.getElementById('newAlbumModal').classList.add('active')">+ New Album</button>
-</div>
+    <div class="admin-actions">
+      <button class="btn btn-primary" onclick="document.getElementById('newAlbumModal').classList.add('active')">+ New Album</button>
+    </div>
 
-<% if (albums.length === 0) { %>
-  <p class="empty-state">No albums yet. Create one to get started.</p>
-<% } else { %>
-  <div class="admin-albums-list">
-    <% albums.forEach(album => { %>
-      <div class="admin-album-row">
-        <div class="admin-album-info">
-          <strong>${album.title}</strong>
-          <% if (album.subtitle) { %>
-            <span class="admin-album-sub">${album.subtitle}</span>
-          <% } %>
-          <span class="admin-album-meta">${album.date} &middot; ${(album.photos || []).length} photos</span>
-        </div>
-        <div class="admin-album-actions">
-          <a href="/admin/album/${album.id}" class="btn btn-sm">Edit</a>
-          <a href="/album/${album.id}" target="_blank" class="btn btn-sm btn-outline">View</a>
-        </div>
+    <% if (albums.length === 0) { %>
+      <p class="empty-state">No albums yet. Create one to get started.</p>
+    <% } else { %>
+      <div class="admin-albums-list">
+        <% albums.forEach(album => { %>
+          <div class="admin-album-row">
+            <div class="admin-album-info">
+              <strong><%= album.title %></strong>
+              <% if (album.subtitle) { %>
+                <span class="admin-album-sub"><%= album.subtitle %></span>
+              <% } %>
+              <span class="admin-album-meta"><%= album.date %> &middot; <%= (album.photos || []).length %> photos</span>
+            </div>
+            <div class="admin-album-actions">
+              <a href="/admin/album/<%= album.id %>" class="btn btn-sm">Edit</a>
+              <a href="/album/<%= album.id %>" target="_blank" class="btn btn-sm btn-outline">View</a>
+            </div>
+          </div>
+        <% }) %>
       </div>
-    <% }) %>
-  </div>
-<% } %>
+    <% } %>
 
-<!-- New Album Modal -->
-<div id="newAlbumModal" class="modal">
-  <div class="modal-backdrop"></div>
-  <div class="modal-content">
-    <h2>New Album</h2>
-    <form method="POST" action="/admin/album/create">
-      <div class="form-group">
-        <label for="title">Title *</label>
-        <input type="text" id="title" name="title" required>
+    <!-- New Album Modal -->
+    <div id="newAlbumModal" class="modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <h2>New Album</h2>
+        <form method="POST" action="/admin/album/create">
+          <div class="form-group">
+            <label for="title">Title *</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+          <div class="form-group">
+            <label for="subtitle">Subtitle</label>
+            <input type="text" id="subtitle" name="subtitle">
+          </div>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" value="<%= new Date().toISOString().split('T')[0] %>">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('newAlbumModal').classList.remove('active')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create Album</button>
+          </div>
+        </form>
       </div>
-      <div class="form-group">
-        <label for="subtitle">Subtitle</label>
-        <input type="text" id="subtitle" name="subtitle">
-      </div>
-      <div class="form-group">
-        <label for="date">Date</label>
-        <input type="date" id="date" name="date" value="${new Date().toISOString().split('T')[0]}">
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-outline" onclick="document.getElementById('newAlbumModal').classList.remove('active')">Cancel</button>
-        <button type="submit" class="btn btn-primary">Create Album</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<script>
-  document.querySelector('.modal-backdrop').addEventListener('click', () => {
-    document.getElementById('newAlbumModal').classList.remove('active');
-  });
-</script>`) %>
+    </div>
+  </main>
+  <script>
+    document.querySelector('.modal-backdrop').addEventListener('click', () => {
+      document.getElementById('newAlbumModal').classList.remove('active');
+    });
+  </script>
+</body>
+</html>

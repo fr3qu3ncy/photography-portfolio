@@ -1,5 +1,25 @@
-<%- include('partials/layout', { body: `<div class="not-found">
-  <h1>404</h1>
-  <p>Page not found</p>
-  <a href="/" class="btn btn-primary">Back Home</a>
-</div>`) %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - <%= siteName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="/" class="site-logo"><%= siteName %></a>
+    <div class="nav-links"><a href="/">Home</a></div>
+  </nav>
+  <main class="container">
+    <div class="not-found">
+      <h1>404</h1>
+      <p>Page not found</p>
+      <a href="/" class="btn btn-primary">Back Home</a>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <p>&copy; <%= new Date().getFullYear() %> <%= siteName %></p>
+  </footer>
+</body>
+</html>
