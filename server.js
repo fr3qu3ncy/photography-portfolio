@@ -172,7 +172,7 @@ app.post('/admin/album/:id/update', requireAdmin, (req, res) => {
   album.date = req.body.date;
   if (req.body.titlePhotoId) album.titlePhotoId = req.body.titlePhotoId;
   saveData(data);
-  res.redirect(`/admin/album/${id}`);
+  res.redirect(`/admin/album/${req.params.id}`);
 });
 
 app.post('/admin/album/:id/delete', requireAdmin, (req, res) => {
