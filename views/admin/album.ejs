@@ -83,7 +83,7 @@
     </div>
 
     <!-- Photos Grid -->
-    <form id="photosForm">
+    <div id="photosForm">
     <div class="admin-photos-grid">
       <% const sorted = (album.photos || []).sort((a, b) => (a.position || 0) - (b.position || 0)); sorted.forEach(photo => { %>
         <div class="admin-photo-item">
@@ -114,7 +114,7 @@
         </div>
       <% }) %>
     </div>
-    </form>
+    </div>
 
     <!-- Bulk Actions Toolbar (bottom) -->
     <div class="bulk-toolbar bulk-toolbar-bottom">
@@ -194,6 +194,21 @@
       const selected = document.querySelectorAll('.photo-select:checked').length;
       return confirm('Delete ' + selected + ' photo' + (selected > 1 ? 's' : '') + '?');
     }
+
+    // ── Scroll position preservation ──
+    // Restore scroll position on page load
+    const savedScroll = sessionStorage.getItem('albumScroll');
+    if (savedScroll) {
+      window.scrollTo(0, parseInt(savedScroll, 10));
+      sessionStorage.removeItem('albumScroll');
+    }
+
+    // Save scroll position before reorder form submits
+    document.querySelectorAll('form[action*="/photo/reorder"]').forEach(form => {
+      form.addEventListener('submit', () => {
+        sessionStorage.setItem('albumScroll', window.scrollY);
+      });
+    });
   </script>
 </body>
 </html>

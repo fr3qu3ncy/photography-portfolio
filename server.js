@@ -29,7 +29,17 @@ const DATA_FILE = path.join(CONFIG.dataDir, 'site.json');
 
 function loadData() {
   if (fs.existsSync(DATA_FILE)) {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+    // Migrate: assign positions to photos missing them
+    for (const album of data.albums || []) {
+      if (!album.photos || !album.photos.length) continue;
+      const hasPositions = album.photos.some(p => p.position !== undefined);
+      if (!hasPositions) {
+        album.photos.forEach((p, i) => { p.position = i; });
+        saveData(data);
+      }
+    }
+    return data;
   }
   const defaults = { siteName: CONFIG.siteName, theme: 'dark', typeface: 'system', heading: 'Albums', subheading: '', description: '', headingAlignment: 'center', albums: [] };
   saveData(defaults);
