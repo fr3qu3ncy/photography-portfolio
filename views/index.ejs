@@ -56,5 +56,14 @@
   <footer class="site-footer">
     <p>&copy; <%= new Date().getFullYear() %> <%= siteName %></p>
   </footer>
+  <script>
+    document.querySelectorAll('a[href^="/album/"]').forEach(a => {
+      a.addEventListener('click', () => sessionStorage.setItem('scrollPos', window.scrollY));
+    });
+    if (sessionStorage.getItem('scrollPos')) {
+      window.scrollTo(0, +sessionStorage.getItem('scrollPos'));
+      sessionStorage.removeItem('scrollPos');
+    }
+  </script>
 </body>
 </html>

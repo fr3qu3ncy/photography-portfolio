@@ -16,7 +16,7 @@
   </nav>
   <main class="container">
     <div class="album-header">
-      <a href="/" class="back-link">&larr; All Albums</a>
+      <a href="/" class="back-link" id="backToAlbums">&larr; All Albums</a>
       <h1 class="album-page-title"><%= album.title %></h1>
       <% if (album.subtitle) { %>
         <p class="album-page-subtitle"><%= album.subtitle %></p>
@@ -49,6 +49,9 @@
       </div>
     </div>
   </main>
+  <div class="album-footer">
+    <a href="/" class="back-link back-link-bottom">&larr; All Albums</a>
+  </div>
   <footer class="site-footer">
     <p>&copy; <%= new Date().getFullYear() %> <%= siteName %></p>
   </footer>
