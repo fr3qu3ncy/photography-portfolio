@@ -18,6 +18,7 @@
     <div class="page-header" style="text-align: <%= headingAlignment || 'center' %>;">
       <h1 class="page-title"><%= heading %></h1>
       <% if (subheading) { %><p class="page-subtitle"><%= subheading %></p><% } %>
+      <% if (description) { %><p class="page-description"><%= description %></p><% } %>
     </div>
     <section class="albums-grid">
       <% if (albums.length === 0) { %>

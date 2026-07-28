@@ -107,6 +107,12 @@
     .tp-hero-sub {
       font-size: 0.5625rem;
       color: var(--tp-text-muted);
+      margin-bottom: 0.125rem;
+    }
+    .tp-hero-desc {
+      font-size: 0.5rem;
+      color: var(--tp-text-muted);
+      line-height: 1.5;
       margin-bottom: 0.75rem;
     }
     .tp-grid {
@@ -181,6 +187,11 @@
       </div>
 
       <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" id="descriptionInput" rows="3" style="resize:vertical;"><%= currentDescription %></textarea>
+      </div>
+
+      <div class="form-group">
         <label>Heading Alignment</label>
         <select id="alignmentSelect" name="headingAlignment" style="width:100%;padding:0.625rem 0.75rem;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.875rem;">
           <option value="left"<%= currentHeadingAlignment === 'left' ? ' selected' : '' %>>Left</option>
@@ -210,6 +221,7 @@
           <div class="tp-hero" id="tpHero">
             <div class="tp-hero-heading" id="tpHeroHeading"><%= currentHeading || 'Albums' %></div>
             <div class="tp-hero-sub" id="tpHeroSub"><%= currentSubheading || '' %></div>
+            <div class="tp-hero-desc" id="tpHeroDesc"><%= currentDescription || '' %></div>
           </div>
           <div class="tp-grid">
             <div class="tp-card">
@@ -300,26 +312,32 @@
     themeSelect.addEventListener('change', updateThemePreview);
     updateThemePreview();
 
-    /* ── Heading/Subheading/Alignment Preview ── */
+    /* ── Heading/Subheading/Description/Alignment Preview ── */
     const headingInput = document.getElementById('headingInput');
     const subheadingInput = document.getElementById('subheadingInput');
+    const descriptionInput = document.getElementById('descriptionInput');
     const alignmentSelect = document.getElementById('alignmentSelect');
     const tpHero = document.getElementById('tpHero');
     const tpHeroHeading = document.getElementById('tpHeroHeading');
     const tpHeroSub = document.getElementById('tpHeroSub');
+    const tpHeroDesc = document.getElementById('tpHeroDesc');
 
     function updateHeroPreview() {
       const heading = headingInput.value || 'Albums';
       const subheading = subheadingInput.value || '';
+      const description = descriptionInput.value || '';
       const alignment = alignmentSelect.value || 'center';
       tpHeroHeading.textContent = heading;
       tpHeroSub.textContent = subheading;
       tpHeroSub.style.display = subheading ? '' : 'none';
+      tpHeroDesc.textContent = description;
+      tpHeroDesc.style.display = description ? '' : 'none';
       tpHero.style.textAlign = alignment;
     }
 
     headingInput.addEventListener('input', updateHeroPreview);
     subheadingInput.addEventListener('input', updateHeroPreview);
+    descriptionInput.addEventListener('input', updateHeroPreview);
     alignmentSelect.addEventListener('change', updateHeroPreview);
     updateHeroPreview();
 
@@ -350,6 +368,7 @@
     ];
     const tpBodyEls = [
       document.getElementById('tpHeroSub'),
+      document.getElementById('tpHeroDesc'),
       document.getElementById('tpCardDate1')
     ];
 

@@ -31,7 +31,7 @@ function loadData() {
   if (fs.existsSync(DATA_FILE)) {
     return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
   }
-  const defaults = { siteName: CONFIG.siteName, theme: 'dark', typeface: 'system', heading: 'Albums', subheading: '', headingAlignment: 'center', albums: [] };
+  const defaults = { siteName: CONFIG.siteName, theme: 'dark', typeface: 'system', heading: 'Albums', subheading: '', description: '', headingAlignment: 'center', albums: [] };
   saveData(defaults);
   return defaults;
 }
@@ -93,6 +93,7 @@ app.get('/', (req, res) => {
     siteName: data.siteName,
     heading: data.heading || 'Albums',
     subheading: data.subheading || '',
+    description: data.description || '',
     headingAlignment: data.headingAlignment || 'center',
     albums,
   });
@@ -146,6 +147,7 @@ app.get('/admin/settings', requireAdmin, (req, res) => {
     currentTypeface: data.typeface || 'system',
     currentHeading: data.heading || 'Albums',
     currentSubheading: data.subheading || '',
+    currentDescription: data.description || '',
     currentHeadingAlignment: data.headingAlignment || 'center',
     logo: data.logo,
     hasLogo: !!(data.logo && fs.existsSync(path.join(CONFIG.uploadDir, data.logo))),
@@ -159,6 +161,7 @@ app.post('/admin/settings', requireAdmin, (req, res) => {
   data.typeface = req.body.typeface || 'system';
   data.heading = req.body.heading || 'Albums';
   data.subheading = req.body.subheading || '';
+  data.description = req.body.description || '';
   data.headingAlignment = req.body.headingAlignment || 'center';
   if (req.body.removeLogo === 'true') {
     if (data.logo) {
