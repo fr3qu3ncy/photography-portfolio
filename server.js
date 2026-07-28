@@ -104,7 +104,7 @@ app.get('/album/:id', (req, res) => {
   const album = (data.albums || []).find(a => a.id === req.params.id);
   if (!album) return res.status(404).render('404', { siteName: data.siteName });
 
-  const photos = album.photos || [];
+  const photos = (album.photos || []).sort((a, b) => (a.position || 0) - (b.position || 0));
   res.render('album', {
     siteName: data.siteName,
     album,
@@ -278,6 +278,7 @@ app.post('/admin/album/:id/photos', requireAdmin, upload.array('photos', 50), as
         filename: file.filename,
         thumbFilename: thumbName,
         fullFilename: fullName,
+        position: album.photos.length,
       });
     }
 
@@ -320,6 +321,36 @@ app.post('/admin/album/:albumId/photo/:photoId/title', requireAdmin, (req, res) 
   const album = data.albums.find(a => a.id === req.params.albumId);
   if (!album) return res.status(404).send('Album not found');
   album.titlePhotoId = req.params.photoId;
+  saveData(data);
+  res.redirect(`/admin/album/${req.params.albumId}`);
+});
+
+// ── Photo reorder ──────────────────────────────────────
+app.post('/admin/album/:albumId/photo/reorder', requireAdmin, (req, res) => {
+  const data = loadData();
+  const album = data.albums.find(a => a.id === req.params.albumId);
+  if (!album) return res.status(404).send('Album not found');
+
+  const photoId = req.body.photoId;
+  const direction = req.body.direction; // 'up' or 'down'
+
+  // Sort by position to find current order
+  const sorted = [...album.photos].sort((a, b) => (a.position || 0) - (b.position || 0));
+  const idx = sorted.findIndex(p => p.id === photoId);
+  if (idx === -1) return res.status(404).send('Photo not found');
+
+  const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+  if (swapIdx < 0 || swapIdx >= sorted.length) return res.redirect(`/admin/album/${req.params.albumId}`);
+
+  // Swap positions
+  const temp = sorted[idx].position;
+  sorted[idx].position = sorted[swapIdx].position;
+  sorted[swapIdx].position = temp;
+
+  // Rebuild photos array with swapped positions
+  const posMap = new Map(sorted.map(p => [p.id, p.position]));
+  album.photos.forEach(p => { p.position = posMap.get(p.id) ?? p.position; });
+
   saveData(data);
   res.redirect(`/admin/album/${req.params.albumId}`);
 });

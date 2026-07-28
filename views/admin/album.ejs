@@ -85,7 +85,7 @@
     <!-- Photos Grid -->
     <form id="photosForm">
     <div class="admin-photos-grid">
-      <% (album.photos || []).forEach(photo => { %>
+      <% const sorted = (album.photos || []).sort((a, b) => (a.position || 0) - (b.position || 0)); sorted.forEach(photo => { %>
         <div class="admin-photo-item">
           <label class="photo-checkbox">
             <input type="checkbox" name="photoId" value="<%= photo.id %>" class="photo-select"
@@ -100,7 +100,12 @@
               <form method="POST" action="/admin/album/<%= album.id %>/photo/<%= photo.id %>/title" class="inline-form">
                 <button type="submit" class="btn btn-xs btn-outline" title="Set as title photo">&#9733;</button>
               </form>
-            <% } %>\
+            <% } %>
+            <form method="POST" action="/admin/album/<%= album.id %>/photo/reorder" class="inline-form">
+              <input type="hidden" name="photoId" value="<%= photo.id %>">
+              <button type="submit" name="direction" value="up" class="btn btn-xs btn-outline reorder-btn" title="Move up">&#9650;</button>
+              <button type="submit" name="direction" value="down" class="btn btn-xs btn-outline reorder-btn" title="Move down">&#9660;</button>
+            </form>
             <form method="POST" action="/admin/album/<%= album.id %>/photo/<%= photo.id %>/delete" class="inline-form"
                   onsubmit="return confirm('Delete this photo?')">
               <button type="submit" class="btn btn-xs btn-danger" title="Delete photo">&times;</button>
