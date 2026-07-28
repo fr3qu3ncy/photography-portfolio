@@ -51,6 +51,84 @@ function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
+// ── Migration system ───────────────────────────────────
+const MIGRATIONS_FILE = path.join(CONFIG.dataDir, 'migrations.json');
+
+function loadMigrations() {
+  if (fs.existsSync(MIGRATIONS_FILE)) {
+    return JSON.parse(fs.readFileSync(MIGRATIONS_FILE, 'utf-8'));
+  }
+  const defaults = { completed: [] };
+  saveMigrations(defaults);
+  return defaults;
+}
+
+function saveMigrations(state) {
+  fs.writeFileSync(MIGRATIONS_FILE, JSON.stringify(state, null, 2));
+}
+
+// Migration registry — add new migrations here
+const MIGRATIONS = [
+  {
+    id: 'generate_webp_placeholders',
+    name: 'Generate WebP placeholders',
+    description: 'Create 60px placeholder thumbnails for existing photos that lack them (enables blur-up loading).',
+    async run(progress) {
+      const sharp = require('sharp');
+      const data = loadData();
+      let total = 0;
+      let done = 0;
+
+      // Count total photos needing placeholders
+      for (const album of data.albums || []) {
+        for (const photo of album.photos || []) {
+          if (!photo.placeholderFilename) total++;
+        }
+      }
+
+      if (total === 0) {
+        progress({ message: 'No photos need placeholders', pct: 100 });
+        return { ok: true, generated: 0 };
+      }
+
+      for (const album of data.albums || []) {
+        for (const photo of album.photos || []) {
+          if (photo.placeholderFilename) continue;
+
+          const thumbPath = path.join(CONFIG.uploadDir, photo.thumbFilename);
+          if (!fs.existsSync(thumbPath)) {
+            done++;
+            progress({ message: `Skipping ${photo.id} (thumb missing)`, pct: Math.round((done / total) * 100) });
+            continue;
+          }
+
+          const placeholderName = `${photo.id}_placeholder.webp`;
+          try {
+            await sharp(thumbPath)
+              .resize(CONFIG.placeholderWidth, null, { fit: 'inside' })
+              .webp({ quality: 60 })
+              .toFile(path.join(CONFIG.uploadDir, placeholderName));
+            photo.placeholderFilename = placeholderName;
+          } catch (err) {
+            console.error(`Migration error for ${photo.id}:`, err.message);
+          }
+
+          done++;
+          progress({ message: `Generated placeholder for ${photo.id}`, pct: Math.round((done / total) * 100) });
+        }
+      }
+
+      saveData(data);
+      return { ok: true, generated: done };
+    },
+  },
+];
+
+function getPendingMigrations() {
+  const state = loadMigrations();
+  return MIGRATIONS.filter(m => !state.completed.includes(m.id));
+}
+
 // ── Middleware ─────────────────────────────────────────
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -183,6 +261,39 @@ app.post('/admin/settings', requireAdmin, (req, res) => {
   }
   saveData(data);
   res.redirect('/admin/settings');
+});
+
+// ── Migrations ──────────────────────────────────────────
+app.get('/admin/migrations', requireAdmin, (req, res) => {
+  const state = loadMigrations();
+  const data = loadData();
+  const all = MIGRATIONS.map(m => ({
+    ...m,
+    completed: state.completed.includes(m.id),
+  }));
+  res.render('admin/migrations', { siteName: data.siteName, migrations: all });
+});
+
+app.post('/admin/migrations/:id/run', requireAdmin, async (req, res) => {
+  const migration = MIGRATIONS.find(m => m.id === req.params.id);
+  if (!migration) return res.status(404).send('Migration not found');
+
+  const state = loadMigrations();
+  if (state.completed.includes(migration.id)) {
+    return res.status(400).send('Migration already completed');
+  }
+
+  try {
+    const result = await migration.run((msg) => {
+      console.log(`[migration:${migration.id}]`, msg.message);
+    });
+    state.completed.push(migration.id);
+    saveMigrations(state);
+    res.redirect('/admin/migrations');
+  } catch (err) {
+    console.error(`[migration:${migration.id}] FAILED:`, err);
+    res.status(500).send(`Migration failed: ${err.message}`);
+  }
 });
 
 app.get('/admin/album/:id', requireAdmin, (req, res) => {
@@ -435,4 +546,10 @@ app.use((req, res) => {
 // ── Start ──────────────────────────────────────────────
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Portfolio running on http://0.0.0.0:${PORT}`);
+  const pending = getPendingMigrations();
+  if (pending.length) {
+    console.log(`\n⚠  ${pending.length} pending migration(s):`);
+    pending.forEach(m => console.log(`   • ${m.id} — ${m.description}`));
+    console.log('  Visit /admin/migrations to run them.\n');
+  }
 });
