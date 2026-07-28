@@ -64,7 +64,14 @@
         </select>
       </div>
 
-      <div class="form-group">
+      <div id="typefacePreview" class="typeface-preview">
+        <div class="typeface-preview-label">Heading Preview</div>
+        <div class="typeface-preview-heading" id="previewHeading">The quick brown fox</div>
+        <div class="typeface-preview-label" style="margin-top:0.75rem;">Body Text Preview</div>
+        <div class="typeface-preview-body" id="previewBody">A photography portfolio showcasing moments captured with intention — from quiet landscapes to vibrant cityscapes.</div>
+      </div>
+
+      <div class="form-group" style="margin-top:1rem;">
         <label>Typeface</label>
         <select id="typefaceSelect" name="typeface" style="width:100%;padding:0.625rem 0.75rem;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.875rem;">
           <option value="system"<%= currentTypeface === 'system' ? ' selected' : '' %>>System Sans (default)</option>
@@ -78,13 +85,6 @@
           <option value="roboto_slab"<%= currentTypeface === 'roboto_slab' ? ' selected' : '' %>>Roboto Slab</option>
           <option value="worksans"<%= currentTypeface === 'worksans' ? ' selected' : '' %>>Work Sans</option>
         </select>
-      </div>
-
-      <div id="typefacePreview" class="typeface-preview">
-        <div class="typeface-preview-label">Heading Preview</div>
-        <div class="typeface-preview-heading" id="previewHeading">The quick brown fox</div>
-        <div class="typeface-preview-label" style="margin-top:0.75rem;">Body Text Preview</div>
-        <div class="typeface-preview-body" id="previewBody">A photography portfolio showcasing moments captured with intention — from quiet landscapes to vibrant cityscapes.</div>
       </div>
 
       <button type="submit" class="btn btn-primary">Save Settings</button>
