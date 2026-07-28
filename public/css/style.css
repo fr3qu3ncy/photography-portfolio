@@ -109,6 +109,7 @@ img { display: block; max-width: 100%; }
   line-height: 1.6;
   max-width: 48rem;
   margin: 0 auto 2rem;
+  white-space: pre-wrap;
 }
 
 .albums-grid {
@@ -224,6 +225,7 @@ img { display: block; max-width: 100%; }
   line-height: 1.6;
   max-width: 48rem;
   margin: 0.5rem auto 0;
+  white-space: pre-wrap;
 }
 
 .photo-gallery {
