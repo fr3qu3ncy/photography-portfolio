@@ -170,6 +170,13 @@
         <input type="text" name="siteName" value="<%= currentName %>" required>
       </div>
 
+      <div id="typefacePreview" class="typeface-preview">
+        <div class="typeface-preview-label">Heading Preview</div>
+        <div class="typeface-preview-heading" id="previewHeading">The quick brown fox</div>
+        <div class="typeface-preview-label" style="margin-top:0.75rem;">Body Text Preview</div>
+        <div class="typeface-preview-body" id="previewBody">A photography portfolio showcasing moments captured with intention — from quiet landscapes to vibrant cityscapes.</div>
+      </div>
+
       <div class="form-group">
         <label>Theme</label>
         <select id="themeSelect" name="theme" style="width:100%;padding:0.625rem 0.75rem;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.875rem;">
@@ -182,22 +189,22 @@
         <div class="theme-preview-label">Theme Preview</div>
         <div id="themePreview" class="theme-preview theme-preview-dark">
           <div class="tp-nav">
-            <span class="tp-logo"><%= currentName || 'Lens' %></span>
+            <span class="tp-logo" id="tpLogo"><%= currentName || 'Lens' %></span>
             <div class="tp-nav-links">
-              <span class="tp-nav-link">Albums</span>
+              <span class="tp-nav-link" id="tpNavLinks">Albums</span>
               <span class="tp-nav-link">About</span>
             </div>
           </div>
           <div class="tp-hero">
-            <div class="tp-hero-title">Photography Portfolio</div>
-            <div class="tp-hero-sub">Moments captured with intention</div>
+            <div class="tp-hero-title" id="tpHeroTitle">Photography Portfolio</div>
+            <div class="tp-hero-sub" id="tpHeroSub">Moments captured with intention</div>
           </div>
           <div class="tp-grid">
             <div class="tp-card">
               <div class="tp-card-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
               <div class="tp-card-info">
-                <div class="tp-card-title">Album One</div>
-                <div class="tp-card-date">June 2026</div>
+                <div class="tp-card-title" id="tpCardTitle1">Album One</div>
+                <div class="tp-card-date" id="tpCardDate1">June 2026</div>
               </div>
             </div>
             <div class="tp-card">
@@ -216,13 +223,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div id="typefacePreview" class="typeface-preview">
-        <div class="typeface-preview-label">Heading Preview</div>
-        <div class="typeface-preview-heading" id="previewHeading">The quick brown fox</div>
-        <div class="typeface-preview-label" style="margin-top:0.75rem;">Body Text Preview</div>
-        <div class="typeface-preview-body" id="previewBody">A photography portfolio showcasing moments captured with intention — from quiet landscapes to vibrant cityscapes.</div>
       </div>
 
       <div class="form-group" style="margin-top:1rem;">
@@ -299,11 +299,25 @@
     const heading = document.getElementById('previewHeading');
     const body = document.getElementById('previewBody');
 
+    /* Theme preview elements that update with typeface */
+    const tpHeadingEls = [
+      document.getElementById('tpLogo'),
+      document.getElementById('tpNavLinks'),
+      document.getElementById('tpHeroTitle'),
+      document.getElementById('tpCardTitle1')
+    ];
+    const tpBodyEls = [
+      document.getElementById('tpHeroSub'),
+      document.getElementById('tpCardDate1')
+    ];
+
     function updatePreview() {
       const tf = typefaceMap[select.value];
       if (tf) {
         heading.style.fontFamily = tf.heading;
         body.style.fontFamily = tf.body;
+        tpHeadingEls.forEach(el => { if (el) el.style.fontFamily = tf.heading; });
+        tpBodyEls.forEach(el => { if (el) el.style.fontFamily = tf.body; });
       }
     }
 
