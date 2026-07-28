@@ -31,7 +31,7 @@ function loadData() {
   if (fs.existsSync(DATA_FILE)) {
     return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
   }
-  const defaults = { siteName: CONFIG.siteName, theme: 'dark', typeface: 'system', albums: [] };
+  const defaults = { siteName: CONFIG.siteName, theme: 'dark', typeface: 'system', heading: 'Albums', subheading: '', headingAlignment: 'center', albums: [] };
   saveData(defaults);
   return defaults;
 }
@@ -89,7 +89,13 @@ function requireAdmin(req, res, next) {
 app.get('/', (req, res) => {
   const data = loadData();
   const albums = (data.albums || []).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-  res.render('index', { siteName: data.siteName, albums });
+  res.render('index', {
+    siteName: data.siteName,
+    heading: data.heading || 'Albums',
+    subheading: data.subheading || '',
+    headingAlignment: data.headingAlignment || 'center',
+    albums,
+  });
 });
 
 app.get('/album/:id', (req, res) => {
@@ -138,6 +144,9 @@ app.get('/admin/settings', requireAdmin, (req, res) => {
     currentName: data.siteName || CONFIG.siteName,
     currentTheme: data.theme || 'dark',
     currentTypeface: data.typeface || 'system',
+    currentHeading: data.heading || 'Albums',
+    currentSubheading: data.subheading || '',
+    currentHeadingAlignment: data.headingAlignment || 'center',
     logo: data.logo,
     hasLogo: !!(data.logo && fs.existsSync(path.join(CONFIG.uploadDir, data.logo))),
   });
@@ -148,6 +157,9 @@ app.post('/admin/settings', requireAdmin, (req, res) => {
   data.siteName = req.body.siteName || CONFIG.siteName;
   data.theme = req.body.theme || 'dark';
   data.typeface = req.body.typeface || 'system';
+  data.heading = req.body.heading || 'Albums';
+  data.subheading = req.body.subheading || '';
+  data.headingAlignment = req.body.headingAlignment || 'center';
   if (req.body.removeLogo === 'true') {
     if (data.logo) {
       const logoPath = path.join(CONFIG.uploadDir, data.logo);

@@ -15,7 +15,10 @@
     <div class="nav-links"><a href="/">Home</a></div>
   </nav>
   <main class="container">
-    <h1 class="page-title">Albums</h1>
+    <div class="page-header" style="text-align: <%= headingAlignment || 'center' %>;">
+      <h1 class="page-title"><%= heading %></h1>
+      <% if (subheading) { %><p class="page-subtitle"><%= subheading %></p><% } %>
+    </div>
     <section class="albums-grid">
       <% if (albums.length === 0) { %>
         <p class="empty-state">No albums yet.</p>

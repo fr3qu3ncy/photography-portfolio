@@ -98,11 +98,11 @@
       background: var(--tp-bg);
       text-align: center;
     }
-    .tp-hero-title {
+    .tp-hero-heading {
       font-size: 0.875rem;
       font-weight: 700;
       color: var(--tp-text);
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.125rem;
     }
     .tp-hero-sub {
       font-size: 0.5625rem;
@@ -171,6 +171,25 @@
       </div>
 
       <div class="form-group">
+        <label>Page Heading</label>
+        <input type="text" name="heading" id="headingInput" value="<%= currentHeading %>" required>
+      </div>
+
+      <div class="form-group">
+        <label>Subheading</label>
+        <input type="text" name="subheading" id="subheadingInput" value="<%= currentSubheading %>">
+      </div>
+
+      <div class="form-group">
+        <label>Heading Alignment</label>
+        <select id="alignmentSelect" name="headingAlignment" style="width:100%;padding:0.625rem 0.75rem;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.875rem;">
+          <option value="left"<%= currentHeadingAlignment === 'left' ? ' selected' : '' %>>Left</option>
+          <option value="center"<%= currentHeadingAlignment === 'center' ? ' selected' : '' %>>Center</option>
+          <option value="right"<%= currentHeadingAlignment === 'right' ? ' selected' : '' %>>Right</option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label>Theme</label>
         <select id="themeSelect" name="theme" style="width:100%;padding:0.625rem 0.75rem;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.875rem;">
           <option value="dark"<%= currentTheme === 'dark' ? ' selected' : '' %>>Dark</option>
@@ -188,9 +207,9 @@
               <span class="tp-nav-link">About</span>
             </div>
           </div>
-          <div class="tp-hero">
-            <div class="tp-hero-title" id="tpHeroTitle">Photography Portfolio</div>
-            <div class="tp-hero-sub" id="tpHeroSub">Moments captured with intention</div>
+          <div class="tp-hero" id="tpHero">
+            <div class="tp-hero-heading" id="tpHeroHeading"><%= currentHeading || 'Albums' %></div>
+            <div class="tp-hero-sub" id="tpHeroSub"><%= currentSubheading || '' %></div>
           </div>
           <div class="tp-grid">
             <div class="tp-card">
@@ -281,6 +300,29 @@
     themeSelect.addEventListener('change', updateThemePreview);
     updateThemePreview();
 
+    /* ── Heading/Subheading/Alignment Preview ── */
+    const headingInput = document.getElementById('headingInput');
+    const subheadingInput = document.getElementById('subheadingInput');
+    const alignmentSelect = document.getElementById('alignmentSelect');
+    const tpHero = document.getElementById('tpHero');
+    const tpHeroHeading = document.getElementById('tpHeroHeading');
+    const tpHeroSub = document.getElementById('tpHeroSub');
+
+    function updateHeroPreview() {
+      const heading = headingInput.value || 'Albums';
+      const subheading = subheadingInput.value || '';
+      const alignment = alignmentSelect.value || 'center';
+      tpHeroHeading.textContent = heading;
+      tpHeroSub.textContent = subheading;
+      tpHeroSub.style.display = subheading ? '' : 'none';
+      tpHero.style.textAlign = alignment;
+    }
+
+    headingInput.addEventListener('input', updateHeroPreview);
+    subheadingInput.addEventListener('input', updateHeroPreview);
+    alignmentSelect.addEventListener('change', updateHeroPreview);
+    updateHeroPreview();
+
     /* ── Typeface Preview ── */
     const typefaceMap = {
       system: { body: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif', heading: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif' },
@@ -303,7 +345,7 @@
     const tpHeadingEls = [
       document.getElementById('tpLogo'),
       document.getElementById('tpNavLinks'),
-      document.getElementById('tpHeroTitle'),
+      document.getElementById('tpHeroHeading'),
       document.getElementById('tpCardTitle1')
     ];
     const tpBodyEls = [

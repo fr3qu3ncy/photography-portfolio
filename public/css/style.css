@@ -92,9 +92,15 @@ img { display: block; max-width: 100%; }
 .page-title {
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
   font-family: var(--font-heading);
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
 }
 
 .albums-grid {
