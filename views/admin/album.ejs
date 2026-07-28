@@ -92,7 +92,11 @@
                    onchange="updateBulkState()">
             <span class="checkmark"></span>
           </label>
-          <img src="/uploads/<%= photo.thumbFilename %>" alt="">
+          <img src="/uploads/<%= photo.placeholderFilename || photo.thumbFilename %>"
+               data-src="/uploads/<%= photo.thumbFilename %>"
+               alt=""
+               loading="lazy"
+               class="admin-photo-img blur-up">
           <div class="admin-photo-actions">
             <% if (album.titlePhotoId === photo.id) { %>
               <span class="title-badge">Title Photo</span>
@@ -145,6 +149,14 @@
 
   <script src="/js/upload.js"></script>
   <script>
+    // ── Blur-up for admin photo grid ──
+    document.querySelectorAll('.blur-up').forEach(img => {
+      const thumbSrc = img.dataset.src;
+      if (!thumbSrc) return;
+      img.addEventListener('load', () => img.classList.add('loaded'));
+      img.src = thumbSrc;
+    });
+
     function updateBulkState() {
       const checkboxes = document.querySelectorAll('.photo-select');
       const selected = Array.from(checkboxes).filter(cb => cb.checked);

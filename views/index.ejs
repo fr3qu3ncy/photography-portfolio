@@ -29,7 +29,11 @@
           <a href="/album/<%= album.id %>" class="album-card">
             <div class="album-cover">
               <% if (titlePhoto) { %>
-                <img src="/uploads/<%= titlePhoto.thumbFilename %>" alt="<%= album.title %>" loading="lazy">
+                <img src="/uploads/<%= titlePhoto.placeholderFilename || titlePhoto.thumbFilename %>"
+                     data-src="/uploads/<%= titlePhoto.thumbFilename %>"
+                     alt="<%= album.title %>"
+                     loading="lazy"
+                     class="blur-up">
               <% } else { %>
                 <div class="album-cover-placeholder">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -57,6 +61,14 @@
     <p>&copy; <%= new Date().getFullYear() %> <%= siteName %></p>
   </footer>
   <script>
+    // ── Blur-up for album covers ──
+    document.querySelectorAll('.blur-up').forEach(img => {
+      const thumbSrc = img.dataset.src;
+      if (!thumbSrc) return;
+      img.addEventListener('load', () => img.classList.add('loaded'));
+      img.src = thumbSrc;
+    });
+
     document.querySelectorAll('a[href^="/album/"]').forEach(a => {
       a.addEventListener('click', () => sessionStorage.setItem('scrollPos', window.scrollY));
     });

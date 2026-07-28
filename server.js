@@ -17,6 +17,7 @@ const CONFIG = {
   maxFileSize: parseInt(process.env.MAX_FILE_SIZE) || 20971520,
   thumbWidth: parseInt(process.env.THUMB_WIDTH) || 600,
   fullWidth: parseInt(process.env.FULL_WIDTH) || 1920,
+  placeholderWidth: parseInt(process.env.PLACEHOLDER_WIDTH) || 60,
 };
 
 // ── Ensure directories exist ───────────────────────────
@@ -227,10 +228,9 @@ app.post('/admin/album/:id/delete', requireAdmin, (req, res) => {
 
   // Delete photos
   for (const photo of album.photos || []) {
-    const origPath = path.join(CONFIG.uploadDir, photo.filename);
-    const thumbPath = path.join(CONFIG.uploadDir, photo.thumbFilename);
-    const fullPath = path.join(CONFIG.uploadDir, photo.fullFilename);
-    for (const p of [origPath, thumbPath, fullPath]) {
+    for (const fname of [photo.filename, photo.thumbFilename, photo.fullFilename, photo.placeholderFilename]) {
+      if (!fname) continue;
+      const p = path.join(CONFIG.uploadDir, fname);
       if (fs.existsSync(p)) fs.unlinkSync(p);
     }
   }
@@ -270,24 +270,38 @@ app.post('/admin/album/:id/photos', requireAdmin, upload.array('photos', 50), as
 
     for (const file of req.files) {
       const photoId = `photo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-      const ext = path.extname(file.filename);
-      const thumbName = `${photoId}_thumb${ext}`;
-      const fullName = `${photoId}_full${ext}`;
+      const webpExt = '.webp';
+      const thumbName = `${photoId}_thumb${webpExt}`;
+      const fullName = `${photoId}_full${webpExt}`;
+      const placeholderName = `${photoId}_placeholder${webpExt}`;
 
-      // Generate thumbnail and full-size versions
+      // Generate placeholder (tiny, for blur-up effect)
+      await sharp(file.path)
+        .resize(CONFIG.placeholderWidth, null, { fit: 'inside' })
+        .webp({ quality: 60 })
+        .toFile(path.join(CONFIG.uploadDir, placeholderName));
+
+      // Generate thumbnail
       await sharp(file.path)
         .resize(CONFIG.thumbWidth, null, { fit: 'inside' })
+        .webp({ quality: 80 })
         .toFile(path.join(CONFIG.uploadDir, thumbName));
 
+      // Generate full-size
       await sharp(file.path)
         .resize(CONFIG.fullWidth, null, { fit: 'inside' })
+        .webp({ quality: 85 })
         .toFile(path.join(CONFIG.uploadDir, fullName));
+
+      // Delete original upload (we only need WebP versions)
+      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
 
       album.photos.push({
         id: photoId,
         filename: file.filename,
         thumbFilename: thumbName,
         fullFilename: fullName,
+        placeholderFilename: placeholderName,
         position: album.photos.length,
       });
     }
@@ -313,7 +327,8 @@ app.post('/admin/album/:albumId/photo/:photoId/delete', requireAdmin, (req, res)
   const photo = album.photos.find(p => p.id === req.params.photoId);
   if (!photo) return res.status(404).send('Photo not found');
 
-  for (const fname of [photo.filename, photo.thumbFilename, photo.fullFilename]) {
+  for (const fname of [photo.filename, photo.thumbFilename, photo.fullFilename, photo.placeholderFilename]) {
+    if (!fname) continue;
     const p = path.join(CONFIG.uploadDir, fname);
     if (fs.existsSync(p)) fs.unlinkSync(p);
   }
@@ -375,7 +390,8 @@ app.post('/admin/album/:albumId/photos/bulk-delete', requireAdmin, (req, res) =>
   for (const photoId of photoIds) {
     const photo = album.photos.find(p => p.id === photoId);
     if (!photo) continue;
-    for (const fname of [photo.filename, photo.thumbFilename, photo.fullFilename]) {
+    for (const fname of [photo.filename, photo.thumbFilename, photo.fullFilename, photo.placeholderFilename]) {
+      if (!fname) continue;
       const p = path.join(CONFIG.uploadDir, fname);
       if (fs.existsSync(p)) fs.unlinkSync(p);
     }

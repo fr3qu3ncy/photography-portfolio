@@ -31,11 +31,12 @@
     <section class="photo-gallery">
       <% photos.forEach(photo => { %>
         <div class="gallery-item">
-          <img src="/uploads/<%= photo.thumbFilename %>"
+          <img src="/uploads/<%= photo.placeholderFilename || photo.thumbFilename %>"
+               data-src="/uploads/<%= photo.thumbFilename %>"
                data-full="/uploads/<%= photo.fullFilename %>"
                alt="<%= album.title %>"
                loading="lazy"
-               class="gallery-img">
+               class="gallery-img blur-up">
         </div>
       <% }) %>
     </section>

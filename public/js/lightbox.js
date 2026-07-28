@@ -7,6 +7,20 @@
   let currentIndex = 0;
   let fullUrls = [];
 
+  // ── Blur-up: swap placeholder → full thumbnail ──
+  images.forEach(img => {
+    const thumbSrc = img.dataset.src;
+    if (!thumbSrc) return;
+
+    img.addEventListener('load', () => {
+      img.classList.add('loaded');
+    });
+
+    // Swap to full-resolution thumbnail
+    img.src = thumbSrc;
+  });
+
+  // ── Lightbox ──
   images.forEach((img, i) => {
     fullUrls.push(img.dataset.full);
     img.addEventListener('click', () => {

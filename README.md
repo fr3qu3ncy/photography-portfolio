@@ -6,10 +6,11 @@ A lightweight photography portfolio website built with Express.js, EJS templates
 
 - **Albums** — Create albums with title, subtitle, description, and date
 - **Photo Gallery** — Masonry-style layout handling portrait and landscape photos
+- **Blur-up loading** — Tiny placeholders load instantly, then sharpen to full thumbnails
+- **WebP images** — All uploads converted to WebP for smaller file sizes
 - **Lightbox** — Full-screen photo viewer with keyboard navigation
 - **Admin Panel** — Create/edit/delete albums, batch photo upload with drag-and-drop, photo reordering
 - **Site Settings** — Customize site name, logo, and theme (dark/light)
-- **Image Processing** — Automatic thumbnail and full-size generation with Sharp
 - **Responsive** — Works on desktop and mobile
 
 ## Prerequisites
@@ -63,6 +64,7 @@ All `.env` options:
 | `MAX_FILE_SIZE` | `20971520` | Max upload size in bytes (20 MB) |
 | `THUMB_WIDTH` | `600` | Thumbnail width in pixels |
 | `FULL_WIDTH` | `1920` | Full-size resize width in pixels |
+| `PLACEHOLDER_WIDTH` | `60` | Blur-up placeholder width in pixels |
 
 ### 3. Build and start
 
