@@ -5,24 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404 - <%= siteName %></title>
   <link rel="stylesheet" href="/css/style.css">
-  <% if (typeface && typeface !== 'system') { %>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=<%= typeface === 'inter' ? 'Inter:wght@400;600;700' : typeface === 'playfair' ? 'Playfair+Display:wght@600;700' : typeface === 'dmsans' ? 'DM+Sans:ital,wght@0,400;0,600;0,700;1,400' : typeface === 'spacegrotesk' ? 'Space+Grotesk:wght@400;600;700' : 'Lora:wght@400;600;700' %>&display=swap" rel="stylesheet">
-  <style>
-    <% if (typeface === 'inter') { %>
-      :root { --font-body: 'Inter', sans-serif; --font-heading: 'Inter', sans-serif; }
-    <% } else if (typeface === 'playfair') { %>
-      :root { --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; --font-heading: 'Playfair Display', serif; }
-    <% } else if (typeface === 'dmsans') { %>
-      :root { --font-body: 'DM Sans', sans-serif; --font-heading: 'DM Sans', sans-serif; }
-    <% } else if (typeface === 'spacegrotesk') { %>
-      :root { --font-body: 'Space Grotesk', sans-serif; --font-heading: 'Space Grotesk', sans-serif; }
-    <% } else if (typeface === 'lora') { %>
-      :root { --font-body: 'Lora', serif; --font-heading: 'Lora', serif; }
-    <% } %>
-  </style>
-  <% } %>
+  <%- include('./partials/fonts') %>
 </head>
 <body>
   <nav class="site-nav">
