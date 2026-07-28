@@ -229,10 +229,17 @@ img { display: block; max-width: 100%; }
 }
 
 .album-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   text-align: center;
-  padding: 2rem 0;
+  padding: 0.75rem 0;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--border);
-  margin-top: 2rem;
+  z-index: 40;
 }
 
 .photo-gallery {
@@ -303,6 +310,10 @@ img { display: block; max-width: 100%; }
   color: #1c1917;
 }
 
+[data-theme="light"] .album-footer {
+  background: rgba(250, 250, 249, 0.9);
+}
+
 .site-footer {
   text-align: center;
   padding: 2rem;
@@ -359,4 +370,9 @@ img { display: block; max-width: 100%; }
   .album-page-title { font-size: 1.5rem; }
   .site-nav { padding: 1rem; }
   .container { padding: 1.5rem 1rem; }
+}
+
+/* Album page: add bottom padding so content isn't hidden behind fixed footer */
+body.album-page .container {
+  padding-bottom: 5rem;
 }
