@@ -4,8 +4,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= album.title %> - <%= siteName %></title>
+  <% if (metaDescription) { %><meta name="description" content="<%= metaDescription %>"><% } %>
+
+  <!-- Favicons -->
+  <% if (typeof faviconFilename !== 'undefined' && faviconFilename) { %><link rel="icon" type="image/png" sizes="32x32" href="/uploads/<%= faviconFilename %>"><% } %>
+  <% if (typeof appleTouchIconFilename !== 'undefined' && appleTouchIconFilename) { %><link rel="apple-touch-icon" sizes="180x180" href="/uploads/<%= appleTouchIconFilename %>"><% } %>
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="<%= ogUrl %>">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<%= album.title %> - <%= siteName %>">
+  <% if (metaDescription) { %><meta property="og:description" content="<%= metaDescription %>"><% } %>
+  <meta property="og:url" content="<%= ogUrl %>">
+  <% if (ogImage) { %><meta property="og:image" content="<%= ogImage %>"><% } %>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= album.title %> - <%= siteName %>">
+  <% if (metaDescription) { %><meta name="twitter:description" content="<%= metaDescription %>"><% } %>
+  <% if (ogImage) { %><meta name="twitter:image" content="<%= ogImage %>"><% } %>
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link rel="stylesheet" href="/css/style.css">
   <%- include('./partials/fonts') %>
+
+  <!-- Structured Data: ImageGallery -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    "@id": "<%= ogUrl %>/#gallery",
+    "url": "<%= ogUrl %>",
+    "name": "<%= album.title %>",
+    "description": "<%= (album.description || metaDescription || album.subtitle || '').replace(/"/g, '\\"').slice(0, 500) %>",
+    "partOf": {
+      "@type": "WebPage",
+      "@id": "<%= ogUrl %>/#webpage",
+      "url": "<%= ogUrl %>",
+      "name": "<%= album.title %> - <%= siteName %>"
+    },
+    "thumbnailUrl": "<%= ogImage %>",
+    "image": [
+      <% photos.slice(0, 20).forEach((photo, i) => { %>
+        {
+          "@type": "ImageObject",
+          "contentUrl": "<%= siteUrl %>/uploads/<%= photo.fullFilename %>",
+          "thumbnailUrl": "<%= siteUrl %>/uploads/<%= photo.thumbFilename %>",
+          "name": "<%= album.title %> - Photo <%= i + 1 %>"
+        }<% if (i < Math.min(photos.length, 20) - 1) { %>,<% } %>
+      <% }) %>
+    ]
+  }
+  </script>
 </head>
 <body class="album-page">
   <nav class="site-nav">

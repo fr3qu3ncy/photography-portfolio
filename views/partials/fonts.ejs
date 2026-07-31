@@ -27,7 +27,10 @@
     const f = fonts[typeface];
     const m = fontMap[typeface];
   %>
-  <link href="https://fonts.googleapis.com/css2?family=<%= f %>&display=swap" rel="stylesheet">
+  <!-- Non-blocking font load: preload as print, activate on load -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=<%= f %>&display=optional">
+  <link id="google-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=<%= f %>&display=optional" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=<%= f %>&display=swap"></noscript>
   <style>
     :root { --font-body: <%- m.body %>; --font-heading: <%- m.heading %>; }
   </style>

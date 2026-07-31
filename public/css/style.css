@@ -258,7 +258,9 @@ img { display: block; max-width: 100%; }
 
 .gallery-img {
   width: 100%;
+  height: auto;
   display: block;
+  object-fit: contain;
   transition: opacity 0.2s;
 }
 .gallery-item:hover .gallery-img {

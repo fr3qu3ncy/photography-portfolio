@@ -4,8 +4,71 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= siteName %></title>
+  <% if (metaDescription) { %><meta name="description" content="<%= metaDescription %>"><% } %>
+
+  <!-- Favicons -->
+  <% if (typeof faviconFilename !== 'undefined' && faviconFilename) { %><link rel="icon" type="image/png" sizes="32x32" href="/uploads/<%= faviconFilename %>"><% } %>
+  <% if (typeof appleTouchIconFilename !== 'undefined' && appleTouchIconFilename) { %><link rel="apple-touch-icon" sizes="180x180" href="/uploads/<%= appleTouchIconFilename %>"><% } %>
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="<%= ogUrl %>">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<%= siteName %>">
+  <% if (metaDescription) { %><meta property="og:description" content="<%= metaDescription %>"><% } %>
+  <meta property="og:url" content="<%= ogUrl %>">
+  <% if (ogImage) { %><meta property="og:image" content="<%= ogImage %>"><% } %>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= siteName %>">
+  <% if (metaDescription) { %><meta name="twitter:description" content="<%= metaDescription %>"><% } %>
+  <% if (ogImage) { %><meta name="twitter:image" content="<%= ogImage %>"><% } %>
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link rel="stylesheet" href="/css/style.css">
   <%- include('./partials/fonts') %>
+
+  <!-- Structured Data: Organization + WebPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "<%= ogUrl %>/#organization",
+        "name": "<%= siteName %>",
+        "url": "<%= ogUrl %>"
+        <% if (ogImage) { %>,
+        "logo": {
+          "@type": "ImageObject",
+          "url": "<%= ogImage %>"
+        }<% } %>
+      },
+      {
+        "@type": "WebPage",
+        "@id": "<%= ogUrl %>/#webpage",
+        "url": "<%= ogUrl %>",
+        "name": "<%= siteName %>",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "<%= ogUrl %>/#website",
+          "url": "<%= ogUrl %>",
+          "name": "<%= siteName %>",
+          "publisher": {
+            "@id": "<%= ogUrl %>/#organization"
+          }
+        }
+        <% if (metaDescription) { %>,
+        "description": "<%= metaDescription.replace(/"/g, '\\"') %>"<% } %>
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <nav class="site-nav">
@@ -32,6 +95,7 @@
                 <img src="/uploads/<%= titlePhoto.placeholderFilename || titlePhoto.thumbFilename %>"
                      data-src="/uploads/<%= titlePhoto.thumbFilename %>"
                      alt="<%= album.title %>"
+                     <% if (titlePhoto.thumbWidth) { %>width="<%= titlePhoto.thumbWidth %>" height="<%= titlePhoto.thumbHeight %>"<% } %>
                      loading="lazy"
                      class="blur-up">
               <% } else { %>
